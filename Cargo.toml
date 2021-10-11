@@ -6,3 +6,22 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+mongodb = { version = "1.2.0", default-features = false, features = ["async-std-runtime"] }
+async-std = { version = "1.9.0", features = ["attributes"] }
+serde = { version = "1.0.124", features = ["derive"] }
+async-graphql-actix-web = "2.0.0"
+async-graphql = "2.0.0"
+actix-cors = "0.5.4"
+serde_json = "1.0.64"
+actix-web = "3.0.0"
+futures = "0.3.13"
+slab = "0.4.2"
+bson = "1.2.0"
+base64 = "0.13.0"
+image = "0.23.14"
+dominant_color = "0.3.0"
+kmeans_colors = "0.4.0"
+palette = "0.5.0"
+reqwest = { version = "0.11.3", features = ["json"] } 
+tokio = { version = "1.6.1", features = ["macros", "rt-multi-thread"] }
+webpage = { version = "1.1", features = ["serde"] }
