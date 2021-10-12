@@ -2,6 +2,9 @@ use async_graphql::{Error, Context};
 use crate::dbs::mongo::Connect;
 
 use crate::articles::{self, models::Article};
+use crate::auth::{self, services::SafeUser};
+use webpage::{Webpage, WebpageOptions};
+use serde_json::json;
 pub struct QueryRoot;
 
 #[async_graphql::Object]
@@ -16,5 +19,9 @@ impl QueryRoot {
         articles::services::all_articles(db).await
     }
 
-    
+    async fn get_user(&self, ctx: &Context<'_>, id: String) 
+    -> std::result::Result<SafeUser, async_graphql::Error> {
+        let db = ctx.data_unchecked::<Connect>().dbref.clone();
+        auth::services::get_user(db, id).await
+    }
 }

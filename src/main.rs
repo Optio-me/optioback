@@ -9,9 +9,10 @@ use actix_cors::Cors;
 mod dbs;
 mod gql;
 mod articles;
+mod auth;
 
 use crate::gql::{generate_schema}; //Build Schema 
-
+use crate::auth::services::get_session;
 
 async fn index(schema: web::Data<async_graphql::Schema<gql::queries::QueryRoot, gql::mutations::Mutation, async_graphql::EmptySubscription>>, gql_req: Request, req: HttpRequest) -> Response {
     let mut gql_req = gql_req.into_inner();
@@ -22,26 +23,24 @@ async fn index(schema: web::Data<async_graphql::Schema<gql::queries::QueryRoot, 
     .and_then(|value| value.to_str().map(|s| s.to_string()).ok());
 
     // Auth stuff
-    // if let Some(auth) = token {
-    //     return match get_session(auth.clone()) {
-    //         Ok(_session) => {
-    //             gql_req = gql_req.data(_session);
-    //             schema.execute(gql_req).await.into()
-    //         },
-    //         Err(_e) => {
-    //             let _error = async_graphql::Response::from_errors(vec![async_graphql::ServerError::new("Not Authorized.", None)]);
-    //             return Response::from(_error);
-    //         }
-    //     }
-    // } else {
-    //     if !gql_req.query.contains("authenticate")  {
-    //         return Response::from(async_graphql::Response::from_errors(vec![async_graphql::ServerError::new("Not Authorized.", None)]));
-    //     }
-        
-    // }
+    if let Some(auth) = token {
+        return match get_session(auth.clone()) {
+            Ok(_session) => {
+                gql_req = gql_req.data(_session);
+                schema.execute(gql_req).await.into()
+            },
+            Err(_e) => {
+                let _error = async_graphql::Response::from_errors(vec![async_graphql::ServerError::new("Not Authorized.", None)]);
+                return Response::from(_error);
+            }
+        }
+    } else {
+        if !gql_req.query.contains("authenticate")  {
+            return Response::from(async_graphql::Response::from_errors(vec![async_graphql::ServerError::new("Not Authorized.", None)]));
+        }
+    }
 
     schema.execute(gql_req).await.into()
-
 }
 
 //GraphQL playground:
