@@ -1,9 +1,8 @@
 //Required imports
 use crate::articles::models::NewArticle;
 use async_graphql::{Error, ErrorExtensions};
-use bson::oid::ObjectId;
 use futures::stream::StreamExt;
-use mongodb::{bson::doc, Collection, Database};
+use mongodb::{Database};
 
 use crate::articles::models::Article; //Tag model
 
@@ -38,14 +37,14 @@ pub async fn all_articles(db: Database) -> std::result::Result<Vec<Article>, asy
     }
 }
 
-pub async fn get_article(db: Database, id: String) -> std::result::Result<Article, async_graphql::Error> {
-    let articles = db.collection("articles");
+// pub async fn get_article(db: Database, id: String) -> std::result::Result<Article, async_graphql::Error> {
+//     let articles = db.collection("articles");
 
-    let cursor = articles.find_one(doc! {"_id": ObjectId::with_string(&id).unwrap() ,}, None).await?
-        .expect("Missing document.");
+//     let cursor = articles.find_one(doc! {"_id": ObjectId::with_string(&id).unwrap() ,}, None).await?
+//         .expect("Missing document.");
 
-    Ok(bson::from_document::<Article>(cursor).unwrap())
-}
+//     Ok(bson::from_document::<Article>(cursor).unwrap())
+// }
 
 
 pub async fn insert_article(

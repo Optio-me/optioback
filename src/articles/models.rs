@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use bson::oid::ObjectId; //Required for the ObjectId type
 
-use async_graphql::{InputObject, Json};
+use async_graphql::{InputObject};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Article {

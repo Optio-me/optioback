@@ -59,18 +59,18 @@ impl SafeUser {
 pub async fn get_tokens(code: String) -> Result<TokenResp, async_graphql::Error> {
     let client = reqwest::Client::new();
     let params = [
-        ("client_id", "6b45745d-2213-4238-a435-9e8e06e0b974"),
+        ("client_id", "d06c06bc-abf7-4abd-84c0-a21a36b3828f"),
         ("scope", "https://graph.microsoft.com/user.read"),
         ("code", &code),
-        ("redirect_uri", "http://localhost:5000/"),
+        ("redirect_uri", "https://www.dimensions-uk.me/"),
         ("grant_type", "authorization_code"),
-        ("code_verifier", "rsn"),
+        ("code_verifier", "optio.me"),
     ];
 
     let res = client
         .post("https://login.microsoftonline.com/common/oauth2/v2.0/token")
         .form(&params)
-        .header(ORIGIN, "http://localhost")
+        .header(ORIGIN, "https://www.dimensions-uk.me/")
         .send()
         .await?
         .json::<serde_json::Value>()

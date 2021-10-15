@@ -38,9 +38,9 @@ async fn index(schema: web::Data<async_graphql::Schema<gql::queries::QueryRoot, 
         if !gql_req.query.contains("authenticate")  {
             return Response::from(async_graphql::Response::from_errors(vec![async_graphql::ServerError::new("Not Authorized.", None)]));
         }
-    }
 
-    schema.execute(gql_req).await.into()
+        schema.execute(gql_req).await.into()
+    }
 }
 
 //GraphQL playground:
@@ -60,6 +60,10 @@ async fn main() -> std::io::Result<()> {
         let cors = Cors::default()
               .allowed_origin("http://192.168.0.106:4000")
               .allowed_origin("http://192.168.0.106:5000")
+              .allowed_origin("http://127.0.0.1:4000")
+              .allowed_origin("https://www.dimensions-uk.me")
+              .allowed_origin("https://www.dimensions-uk.me/actix")
+              .allowed_origin("https://www.dimensions-uk.me/actix/")
               .allowed_origin("http://localhost:5000")
               .allowed_origin("http://localhost")
               .allowed_methods(vec!["GET", "POST"])
@@ -69,12 +73,12 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(schema.clone())
             .wrap(cors)
-            .service(web::resource("/")
+            .service(web::resource("/graphql")
                 .guard(guard::Post()).to(index)) //Allows posting to retrieve data
             .service(web::resource("/")
                 .guard(guard::Get()).to(playground)) //Gives access to playground
     })
-    .bind("192.168.0.106:4000")?
+    .bind("127.0.0.1:4000")?
     .run()
     .await
 }
